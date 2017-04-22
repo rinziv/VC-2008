@@ -3,7 +3,7 @@
 d3.text("assets/data/building_map.txt",function(error, map){
 	if(error) console.log(error);
 	
-	var aMap = map.split('\n').map(function(d){ return d.split(' ').map(function(e){return +e})});
+	var aMap = map.split('\n').map(function(d){ return d.trim().split(' ').map(function(e){return +e})});
 	
 	
 	console.log(aMap);
@@ -14,13 +14,72 @@ d3.text("assets/data/building_map.txt",function(error, map){
 	
 	building.data(aMap);
 	
-})
+});
+
+
+d3.tsv("assets/data/rfid_pathway.txt", 
+	function(row){
+		return {
+			person: +row.Person,
+			time: +row.Time,
+			x: +row.xcor,
+			y: +row.ycor
+		}
+	},
+	function(error, paths){
+		if(error) console.log(error);
+	
+		var trajs = d3.nest()
+			.key(function(d){return d.person})
+		.entries(paths);
+		
+		var trs = d3.values(trajs).map(function(d){return {
+			person: +d.key,
+			values: d.values.map(function(p){return {x:p.x, y:p.y}})
+		}})
+	
+		console.log("trajs",trajs);
+		console.log("trs",trs);
+		
+		
+		// draw all trajectories
+		var x = d3.scale.linear()
+		.domain([0,91])
+		.range([5,915]);
+		
+		var y = d3.scale.linear()
+		.domain([0,60])
+		.range([605,5]);
+		
+		
+		var path = d3.svg.line()
+			.x(function(d){return x(d.x)})
+			.y(function(d){return y(d.y)})
+		.interpolate("linear");
+		
+		
+		var g = d3.select('#building')
+		.select('svg')
+		.append("g")
+		.classed("trajs",true);
+		
+		g.selectAll("path")
+			.data(trs.map(function(d){return d.values}))
+			.enter()
+			.append("path")
+			.attr("stroke-width",1)
+			.attr("stroke", "black")
+			.attr("fill","none")
+			.attr("opacity",0.4)
+		.attr("d", path);
+	}
+)
 
 
 
 
 function buildingBitmap(){
-	var width = 920;
+	var width = 910;
 	var height = 610;
 	var svg;
 	
