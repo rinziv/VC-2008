@@ -5,6 +5,9 @@ function app(){
 	var svg;
 	var map = MapWithLayers();
 	
+	// dispacther for hte events
+	var dispatch = d3.dispatch("changeYear", "changeRecordType");
+	
 	function me(selection){
 		d3.json("assets/data/migrant.json",function(error, json){
 			if(error) throw error;
@@ -99,6 +102,7 @@ function app(){
 			.attr("fill", function(d){return colorYear(d.properties.year)});
 			
 			createToolbar(migrants);
+			registerEventListeners();
 		})
 	}
 	
@@ -112,7 +116,7 @@ function app(){
 		.text("Years:");
 		
 		var tbYear = toolbar.append("div")
-			.attr({id:"mode-group", class:"btn-group", "data-toggle":"buttons" })
+			.attr({id:"mode-group", class:"btn-group year-group", "data-toggle":"buttons" })
 			.selectAll("button")
 			.data([2005,2006,2007])
 			.enter()
@@ -121,7 +125,10 @@ function app(){
 			// .append("input")
 // 			.attr({type:"radio", name:"mode", id:"option1"})
 			.text(function(d){return d})
-			.on("click", function(d){console.log("click year", d)});
+			.on("click", function(d){
+				dispatch.changeYear(d);
+				console.log("click year", d);
+			});
 		
 		toolbar.append("label")
 		.text("RecordType:");
@@ -136,11 +143,30 @@ function app(){
 			// .append("input")
 // 			.attr({type:"radio", name:"mode", id:"option1"})
 		.text(function(d){return d})
-		.on("click", function(d){console.log("click type", d)});
-		
-		// create a selector for RecordType
-		
+		.on("click", function(d){
+			dispatch.changeRecordType(d);
+			console.log("click type", d)
+		});
 	}
+	
+	function registerEventListeners(){
+		dispatch.on("changeYear.buttons", function(newYear){
+			console.log("changeYear.buttons");
+			d3.select("#toolbar").select("div.year-group")
+			.selectAll("button")
+			.classed("active",function(d){return d==newYear})
+			.classed("btn-primary",function(d){return d==newYear});
+		});
+		
+		dispatch.on("changeYear.map", function(newYear){
+			svg.select("g.reports")
+				.selectAll("path")
+				.attr("fill","lightgrey")
+				.filter(function(d){return d.properties.year==newYear})
+			.attr("fill","green");
+		})
+	}
+	
 	
 	return me;
 }
