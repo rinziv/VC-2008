@@ -134,9 +134,9 @@ function app(){
 		.text("RecordType:");
 				
 		var tbRecordType = toolbar.append("div")
-			.attr({id:"mode-group", class:"btn-group", "data-toggle":"buttons" })
+			.attr({id:"mode-group", class:"btn-group recordtype-group", "data-toggle":"buttons" })
 			.selectAll("button")
-			.data(["All","Intediction","Landing"])
+			.data(["All","Interdiction","Landing"])
 			.enter()
 			.append("button")
 			.attr({class:"btn btn-group btn-default", role:"group"})
@@ -161,10 +161,31 @@ function app(){
 		dispatch.on("changeYear.map", function(newYear){
 			svg.select("g.reports")
 				.selectAll("path")
-				.attr("fill","lightgrey")
+			.transition().duration(1500)
+				.attr("opacity",0.0)
 				.filter(function(d){return d.properties.year==newYear})
-			.attr("fill","green");
-		})
+			.attr("opacity",0.6);
+		});
+		
+		
+		dispatch.on("changeRecordType.buttons", function(newRecordType){
+			console.log("changeRecordType.buttons");
+			d3.select("#toolbar").select("div.recordtype-group")
+			.selectAll("button")
+			.classed("active",function(d){return d==newRecordType})
+			.classed("btn-primary",function(d){return d==newRecordType});
+		});
+		
+		dispatch.on("changeRecordType.map", function(newRecordType){
+			svg.select("g.reports")
+				.selectAll("path")
+			.transition().duration(1500)
+			.attr("opacity",0.0)
+				.filter(function(d){
+					return (d.properties.RecordType==newRecordType)
+				})
+			.attr("opacity",0.6);
+		});
 	}
 	
 	
