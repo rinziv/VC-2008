@@ -110,15 +110,20 @@ function app(){
 	}
 	
 	function createSideCharts(){
-		var dimension = "VesselType";
-		var chart = FilteredChart().dimension(dimension);
+		var dimensions = ["VesselType","RecordType", "EncounterDate"];
 		
-		d3.select("#charts")
-		.append("div")
-		.classed("chart-"+dimension, true)
-		.classed("col-xs-12", true)
-		.datum(migrants)
-		.call(chart);
+		dimensions.forEach(function(d){
+			var chart = FilteredChart().dimension(d);
+		
+			d3.select("#charts")
+			.append("div")
+			.classed("chart-"+d, true)
+			.classed("col-xs-12", true)
+			.datum(migrants)
+			.call(chart);
+			
+		})
+		
 	}
 	
 	

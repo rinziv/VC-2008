@@ -19,7 +19,7 @@ function FilteredChart(){
 			.attr({width:"100%", height:400});
 			
 			nvchart = nv.models.multiBarHorizontalChart()
-				.margin({left:50})
+				.margin({left:70})
 				.showLegend(false)
 				.showControls(false);
 		}
@@ -56,7 +56,7 @@ function FilteredChart(){
 				values: grouped
 					.map(function(d){return {x:d.key, y:d.values}}) // rename proerty name of objects
 					.sort(function(a,b){return -a.y + b.y}) // sort by frequency
-					.filter(function(d,i){return i < 10})  // select only first 10 rows
+					//.filter(function(d,i){return i < 10})  // select only first 10 rows
 			}
 		]
 	}
