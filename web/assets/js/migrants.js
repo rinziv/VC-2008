@@ -71,10 +71,10 @@ function app(){
 			console.log("centroid", centroid);
 			
 			map.center(centroid)
-				.scale(4500);
+				.scale(5000);
 							
 			svg = selection.append("svg")
-			.attr({width:"100%", height:800});
+			.attr({width:"100%", height:1000});
 			
 			var gWorld = svg.append("g")
 			.attr("class","mapWorld");
@@ -99,8 +99,8 @@ function app(){
 				.domain([2005,2006,2007])
 				.range(colorbrewer['Dark2'][3]);
 			gReports.selectAll("path")
-			.attr("fill", function(d){return colorYear(d.properties.year)});
-			
+				.attr("fill", function(d){return colorYear(d.properties.year)});
+				
 			createToolbar(migrants);
 			registerEventListeners();
 		})
@@ -113,10 +113,11 @@ function app(){
 		
 		// create a selector for Years
 		toolbar.append("label")
+		.attr("style","margin-right:5px")
 		.text("Years:");
 		
 		var tbYear = toolbar.append("div")
-			.attr({id:"mode-group", class:"btn-group year-group", "data-toggle":"buttons" })
+			.attr({id:"mode-group", class:"btn-group year-group", "data-toggle":"buttons",style:"margin-right:20px; margin-bottom: 10px" })
 			.selectAll("button")
 			.data([2005,2006,2007])
 			.enter()
@@ -131,10 +132,11 @@ function app(){
 			});
 		
 		toolbar.append("label")
+			.attr("style","margin-right:5px")
 		.text("RecordType:");
 				
 		var tbRecordType = toolbar.append("div")
-			.attr({id:"mode-group", class:"btn-group recordtype-group", "data-toggle":"buttons" })
+			.attr({id:"mode-group", class:"btn-group recordtype-group", "data-toggle":"buttons",style:"margin-right:20px; margin-bottom: 10px"  })
 			.selectAll("button")
 			.data(["All","Interdiction","Landing"])
 			.enter()
@@ -150,6 +152,10 @@ function app(){
 	}
 	
 	function registerEventListeners(){
+		var colorReport = d3.scale.ordinal()
+			.domain(["Interdiction","Landing"])
+		.range(["red","green"]);
+		
 		dispatch.on("changeYear.buttons", function(newYear){
 			console.log("changeYear.buttons");
 			d3.select("#toolbar").select("div.year-group")
@@ -163,8 +169,9 @@ function app(){
 				.selectAll("path")
 			.transition().duration(1500)
 				.attr("opacity",0.0)
-				.filter(function(d){return d.properties.year==newYear})
-			.attr("opacity",0.6);
+				.filter(function(d){return (newYear<0)||(d.properties.year==newYear)})
+			.attr("opacity",0.6)
+			.attr("fill",function(d){return colorReport(d.properties.RecordType)});
 		});
 		
 		
@@ -177,6 +184,7 @@ function app(){
 		});
 		
 		dispatch.on("changeRecordType.map", function(newRecordType){
+			dispatch.changeYear(-1);
 			svg.select("g.reports")
 				.selectAll("path")
 			.transition().duration(1500)
@@ -185,6 +193,7 @@ function app(){
 					return (d.properties.RecordType==newRecordType)
 				})
 			.attr("opacity",0.6);
+			
 		});
 	}
 	
