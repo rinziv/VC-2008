@@ -4,6 +4,7 @@ function app(){
 	
 	var svg;
 	var map = MapWithLayers();
+	var migrants;
 	
 	// dispacther for hte events
 	var dispatch = d3.dispatch("changeYear", "changeRecordType");
@@ -12,7 +13,7 @@ function app(){
 		d3.json("assets/data/migrant.json",function(error, json){
 			if(error) throw error;
 			console.log("raw data", json);
-			var migrants = json.map(function(d,i){
+			migrants = json.map(function(d,i){
 				var r =  {
 					EncounterDate: d.EncounterDate,
 					NumDeaths: +d.NumDeaths,
@@ -100,10 +101,24 @@ function app(){
 				.range(colorbrewer['Dark2'][3]);
 			gReports.selectAll("path")
 				.attr("fill", function(d){return colorYear(d.properties.year)});
-				
+			
+			
+			createSideCharts();
 			createToolbar(migrants);
 			registerEventListeners();
 		})
+	}
+	
+	function createSideCharts(){
+		var dimension = "VesselType";
+		var chart = FilteredChart().dimension(dimension);
+		
+		d3.select("#charts")
+		.append("div")
+		.classed("chart-"+dimension, true)
+		.classed("col-xs-12", true)
+		.datum(migrants)
+		.call(chart);
 	}
 	
 	
