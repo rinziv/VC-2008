@@ -6,7 +6,12 @@ function FilteredChart(){
 	// a function to filter a subset of rows
 	var filter= function(d){return true};
 	var svg;
-	var nvchart;
+	var nvchart = nv.models.multiBarHorizontalChart()
+				.margin({left:70})
+				.showLegend(false)
+				.showControls(false);
+	var height = 400;
+	var sortValues = true;
 	
 	function me(selection){
 		console.log("chart data", selection.datum());
@@ -16,12 +21,7 @@ function FilteredChart(){
 			.text(dimension);
 			
 			svg = selection.append("svg")
-			.attr({width:"100%", height:400});
-			
-			nvchart = nv.models.multiBarHorizontalChart()
-				.margin({left:70})
-				.showLegend(false)
-				.showControls(false);
+			.attr({width:"100%", height:height});
 		}
 		svg.datum(groupDataBy(selection.datum(),dimension))
 		.call(nvchart);
@@ -41,6 +41,20 @@ function FilteredChart(){
 		return me;
 	}
 	
+	me.height = function(_){
+		if(!arguments.length) return height;
+		height = _;
+		
+		return me;
+	}
+	
+	me.nvchart = function(_){
+		if(!arguments.length) return nvchart;
+		nvchart = _;
+		
+		return me;
+	}
+	
 	function groupDataBy(data, dimension){
 		var filtered = data.filter(filter);
 
@@ -55,7 +69,8 @@ function FilteredChart(){
 				key:"Count " + dimension,
 				values: grouped
 					.map(function(d){return {x:d.key, y:d.values}}) // rename proerty name of objects
-					.sort(function(a,b){return -a.y + b.y}) // sort by frequency
+					//.sort(function(a,b){return -a.x + b.x}) // sort by frequency
+					.sort(d3.comparator().order(d3.ascending, function(d){return d.x}))
 					//.filter(function(d,i){return i < 10})  // select only first 10 rows
 			}
 		]

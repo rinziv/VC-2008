@@ -22,7 +22,8 @@ function app(){
 					RecordType: d.RecordType,
 					USCG_Vessel: d.USCG_Vessel,
 					VesselType: d.VesselType,
-					year: +d.EncounterDate.split('-')[0]
+					year: +d.EncounterDate.split('-')[0],
+					Month: d.EncounterDate.substring(0,7)
 				}
 		
 				// if(d.EncounterCoords)
@@ -52,7 +53,8 @@ function app(){
 								RecordType: d.RecordType,
 								USCG_Vessel: d.USCG_Vessel,
 								VesselType: d.VesselType,
-								year: d.year
+								year: d.year,
+								Month: d.Month
 							},
 							geometry:{
 								type:"Point",
@@ -110,14 +112,35 @@ function app(){
 	}
 	
 	function createSideCharts(){
-		var dimensions = ["VesselType","RecordType", "EncounterDate"];
+		var dimensions = [
+			{
+				name: "VesselType",
+				container:"#charts"
+			},{
+				name:"RecordType",
+				container:"#charts"
+			},{
+				name:"Month",
+				container:"#timeLineChart",
+				nvchart: nv.models.multiBarChart()
+						.margin({left:70})
+						.showLegend(false)
+						.showControls(false),
+				height: 400
+			}
+		];
 		
 		dimensions.forEach(function(d){
-			var chart = FilteredChart().dimension(d);
-		
-			d3.select("#charts")
+			var chart = FilteredChart().dimension(d.name);
+			if(d.height)
+				chart.height(d.height);
+			
+			if(d.nvchart)
+				chart.nvchart(d.nvchart);
+
+			d3.select(d.container)
 			.append("div")
-			.classed("chart-"+d, true)
+			.classed("chart-"+d.name, true)
 			.classed("col-xs-12", true)
 			.datum(migrants)
 			.call(chart);
