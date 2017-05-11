@@ -190,7 +190,7 @@ function app(){
 			.transition().duration(1500)
 			.attr("opacity",0.0)
 				.filter(function(d){
-					return (d.properties.RecordType==newRecordType)
+					return (newRecordType=="All")||(d.properties.RecordType==newRecordType)
 				})
 			.attr("opacity",0.6);
 			
