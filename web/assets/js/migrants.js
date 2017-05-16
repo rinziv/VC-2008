@@ -147,14 +147,26 @@ function app(){
 	}
 	
 	function createCharts(){
+		var chartDescriptors = [
+			{
+				dimension:"Vessel Type",
+				cfDimension: dVesselType,
+				classed: "chart-VesselType"
+			}
+		];
 		
-		var chart = CrossFilterChart().dimension("VesselType");
-		d3.select("#charts")
-			.append("div")
-			.classed("chart-"+"VesselType", true)
-			.classed("col-md-4", true)
-			.datum(dVesselType.group().reduceCount().all())
-		.call(chart);
+		
+		chartDescriptors.forEach(function(d){
+			var chart = CrossFilterChart().dimension(d.dimension);
+			d3.select("#charts")
+				.append("div")
+				.classed(d.classed, true)
+				.classed("col-md-4", true)
+				.datum(d.cfDimension.group().reduceCount().all())
+			.call(chart);
+		})
+		
+		
 	}
 	
 	
