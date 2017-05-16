@@ -152,7 +152,15 @@ function app(){
 				dimension:"Vessel Type",
 				cfDimension: dVesselType,
 				classed: "chart-VesselType"
-			}
+			},{
+				dimension:"Year",
+				cfDimension: dYear,
+				classed: "chart-Year"
+			},{
+				dimension:"Record Type",
+				cfDimension: dRecordType,
+				classed: "chart-RecordType"
+			},
 		];
 		
 		
