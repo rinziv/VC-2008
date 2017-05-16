@@ -4,6 +4,13 @@ function app(){
 	
 	var svg;
 	var map = MapWithLayers();
+	var migrants;
+	var cf; // crossfilter instance 
+	var dYear; // dimension for Year 
+	var dRecordType; // dimension for RecordType 
+	var dMonth; // dimension for Month 
+	var dVesselType; // dimension for VesselType 
+	
 	
 	// dispacther for hte events
 	var dispatch = d3.dispatch("changeYear", "changeRecordType");
@@ -12,7 +19,7 @@ function app(){
 		d3.json("assets/data/migrant.json",function(error, json){
 			if(error) throw error;
 			console.log("raw data", json);
-			var migrants = json.map(function(d,i){
+			migrants = json.map(function(d,i){
 				var r =  {
 					EncounterDate: d.EncounterDate,
 					NumDeaths: +d.NumDeaths,
@@ -33,7 +40,40 @@ function app(){
 			})
 			
 			console.log("migrants", migrants);
-			console.log(migrants.length);
+	  // initialize Crossfilter   
+	        cf = crossfilter(migrants); 
+	        dYear = cf.dimension(function(d){return d.year}); 
+	        dRecordType = cf.dimension(function(d){return d.RecordType}); 
+	        dVesselType = cf.dimension(function(d){return d.VesselType}); 
+       
+	        // dRecordType.filterAll(); 
+	        console.log("years", dYear.group().reduceCount().all()); 
+	        console.log("recordType", dRecordType.group().reduceCount().all()); 
+	        console.log("vesselType", dVesselType.group().reduceCount().all()); 
+      	  	
+			createCharts();
+			
+	        // select count(*) from migrants where VesselType=="Rustic” 
+	        // dVesselType.filter("Go Fast"); 
+	        console.log("num reports (Go Fast)",cf.groupAll().reduceCount().value()); 
+	        // select sum(Passengers) from migrants where VesselType=="Rustic” 
+	        console.log("num passengers (Go Fast)", cf.groupAll().reduceSum(function(d){return d.Passengers}).value()) 
+	        // select sum(NumDeaths) from migrants where VesselType=="Rustic” 
+	        console.log("num deaths (Go Fast)", cf.groupAll().reduceSum(function(d){return d.NumDeaths}).value()) 
+	        // select VesselType, count(*) from migrants group by VesselType 
+	        var countVesselType = dVesselType.group().reduceCount(); 
+	        console.log(countVesselType.all()); 
+       
+	        // how many report? 
+	        // select count(*) from migrants 
+	        console.log("num reports", cf.groupAll().reduceCount().value()); 
+ 
+	        // select sum(Passengers) from migrants 
+	        console.log("num passengers", cf.groupAll().reduceSum(function(d){return d.Passengers}).value()) 
+ 
+	        // select sum(NumDeaths) from migrants 
+	        console.log("num deaths", cf.groupAll().reduceSum(function(d){return d.NumDeaths}).value()) 
+       
 			
 			// transform reports to a FeatureCollection
 			var fcReports = {
@@ -104,6 +144,17 @@ function app(){
 			createToolbar(migrants);
 			registerEventListeners();
 		})
+	}
+	
+	function createCharts(){
+		
+		var chart = CrossFilterChart().dimension("VesselType");
+		d3.select("#charts")
+			.append("div")
+			.classed("chart-"+"VesselType", true)
+			.classed("col-md-4", true)
+			.datum(dVesselType.group().reduceCount().all())
+		.call(chart);
 	}
 	
 	
