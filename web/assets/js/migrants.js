@@ -237,15 +237,7 @@ function app(){
 			.classed("btn-primary",function(d){return d==newYear});
 		});
 		
-		dispatch.on("changeYear.map", function(newYear){
-			svg.select("g.reports")
-				.selectAll("path")
-			.transition().duration(1500)
-				.attr("opacity",0.0)
-				.filter(function(d){return (newYear<0)||(d.properties.year==newYear)})
-			.attr("opacity",0.6)
-			.attr("fill",function(d){return colorReport(d.properties.RecordType)});
-		});
+		
 		
 		dispatch.on("changeYear.charts", function(newYear){
 			dYear.filter(newYear);
@@ -253,6 +245,12 @@ function app(){
 				d.chart.refresh(d.cfDimension.group().reduceCount().all());
 			})
 		})
+		
+		dispatch.on("changeYear.map", function(newYear){
+			refreshMap(dYear);
+			
+
+		});
 		
 		
 		dispatch.on("changeRecordType.buttons", function(newRecordType){
@@ -274,41 +272,43 @@ function app(){
 		})
 		
 		dispatch.on("changeRecordType.map", function(newRecordType){
-			var fcReports = {
-				type:"FeatureCollection",
-				features: dRecordType.top(Infinity)
-				.map(function(d,i){  // for each entry in Museums dictionary
-					if(d.EncounterCoords)
-						return {
-							type:"Feature",
-							properties:{
-								EncounterDate: d.EncounterDate,
-								NumDeaths: +d.NumDeaths,
-								Passengers: +d.Passengers,
-								RecordNotes: d.RecordNotes,
-								RecordType: d.RecordType,
-								USCG_Vessel: d.USCG_Vessel,
-								VesselType: d.VesselType,
-								year: d.year
-							},
-							geometry:{
-								type:"Point",
-								coordinates: d.EncounterCoords
-							}
+			refreshMap(dRecordType);
+		});
+	}
+	
+	function refreshMap(cfDimension){
+		var fcReports = {
+			type:"FeatureCollection",
+			features: cfDimension.top(Infinity)
+			.map(function(d,i){  // for each entry in Museums dictionary
+				if(d.EncounterCoords)
+					return {
+						type:"Feature",
+						properties:{
+							EncounterDate: d.EncounterDate,
+							NumDeaths: +d.NumDeaths,
+							Passengers: +d.Passengers,
+							RecordNotes: d.RecordNotes,
+							RecordType: d.RecordType,
+							USCG_Vessel: d.USCG_Vessel,
+							VesselType: d.VesselType,
+							year: d.year
+						},
+						geometry:{
+							type:"Point",
+							coordinates: d.EncounterCoords
 						}
-				})
-			};
-			
-			
-			
-			svg.select("g.reports")
-				.datum(fcReports)
-			.call(map);
-			
+					}
+			})
+		};
+		
+		svg.select("g.reports")
+			.datum(fcReports)
+		.call(map);
+		
 		svg.select("g.reports").selectAll("path")
 			.attr("opacity", 0.6	)
 			.attr("fill", function(d){return colorByReport(d.properties.RecordType)});
-		});
 	}
 	
 	
