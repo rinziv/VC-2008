@@ -35,11 +35,17 @@ function MapWithLayers(){
 		// create a group container for map
 		gmap = selection;
 		
-		selection.selectAll("path")
-			.data(selection.datum().features.filter(function(d){return d.properties.CNTR_ID != "AQ"}))
-			.enter()
-			.append("path")
-		.attr("d", path)
+		var paths = selection.selectAll("path")
+		.data(selection.datum().features.filter(function(d){return d.properties.CNTR_ID != "AQ"}));
+		
+		paths.exit().remove();
+		
+		paths.enter()
+		.append("path");
+		
+		
+		
+		paths.attr("d", path)
 		//.on("click", function(d){console.log(d)});
 		
 		// gmap.append("path")

@@ -12,6 +12,10 @@ function app(){
 	var dVesselType; // dimension for VesselType 
 	var chartDescriptors; 
 	
+	var colorByReport = d3.scale.ordinal() 
+		.domain(["Interdiction","Landing"]) 
+		.range(["red","green"]);
+	
 	// dispacther for hte events
 	var dispatch = d3.dispatch("changeYear", "changeRecordType");
 	
@@ -135,9 +139,7 @@ function app(){
 			
 			// change color of points
 			// according to year
-			var colorByReport = d3.scale.ordinal() 
-				.domain(["Interdiction","Landing"]) 
-				.range(["red","green"]);
+			
 			gReports.selectAll("path")
 				.attr("opacity", 0.6	)
 				.attr("fill", function(d){return colorByReport(d.properties.RecordType)});
@@ -272,15 +274,40 @@ function app(){
 		})
 		
 		dispatch.on("changeRecordType.map", function(newRecordType){
-			svg.select("g.reports")
-				.selectAll("path")
-			.transition().duration(1500)
-			.attr("opacity",0.0)
-				.filter(function(d){
-					return (newRecordType=="All")||(d.properties.RecordType==newRecordType)
+			var fcReports = {
+				type:"FeatureCollection",
+				features: dRecordType.top(Infinity)
+				.map(function(d,i){  // for each entry in Museums dictionary
+					if(d.EncounterCoords)
+						return {
+							type:"Feature",
+							properties:{
+								EncounterDate: d.EncounterDate,
+								NumDeaths: +d.NumDeaths,
+								Passengers: +d.Passengers,
+								RecordNotes: d.RecordNotes,
+								RecordType: d.RecordType,
+								USCG_Vessel: d.USCG_Vessel,
+								VesselType: d.VesselType,
+								year: d.year
+							},
+							geometry:{
+								type:"Point",
+								coordinates: d.EncounterCoords
+							}
+						}
 				})
-			.attr("opacity",0.6);
+			};
 			
+			
+			
+			svg.select("g.reports")
+				.datum(fcReports)
+			.call(map);
+			
+		svg.select("g.reports").selectAll("path")
+			.attr("opacity", 0.6	)
+			.attr("fill", function(d){return colorByReport(d.properties.RecordType)});
 		});
 	}
 	
