@@ -135,11 +135,12 @@ function app(){
 			
 			// change color of points
 			// according to year
-			var colorYear = d3.scale.ordinal()
-				.domain([2005,2006,2007])
-				.range(colorbrewer['Dark2'][3]);
+			var colorByReport = d3.scale.ordinal() 
+				.domain(["Interdiction","Landing"]) 
+				.range(["red","green"]);
 			gReports.selectAll("path")
-				.attr("fill", function(d){return colorYear(d.properties.year)});
+				.attr("opacity", 0.6	)
+				.attr("fill", function(d){return colorByReport(d.properties.RecordType)});
 				
 			createToolbar(migrants);
 			registerEventListeners();
