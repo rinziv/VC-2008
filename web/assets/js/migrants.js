@@ -10,7 +10,7 @@ function app(){
 	var dRecordType; // dimension for RecordType 
 	var dMonth; // dimension for Month 
 	var dVesselType; // dimension for VesselType 
-	
+	var chartDescriptors; 
 	
 	// dispacther for hte events
 	var dispatch = d3.dispatch("changeYear", "changeRecordType");
@@ -147,7 +147,7 @@ function app(){
 	}
 	
 	function createCharts(){
-		var chartDescriptors = [
+		chartDescriptors = [
 			{
 				dimension:"Vessel Type",
 				cfDimension: dVesselType,
@@ -166,6 +166,7 @@ function app(){
 		
 		chartDescriptors.forEach(function(d){
 			var chart = CrossFilterChart().dimension(d.dimension);
+			d.chart = chart;
 			d3.select("#charts")
 				.append("div")
 				.classed(d.classed, true)
@@ -173,8 +174,6 @@ function app(){
 				.datum(d.cfDimension.group().reduceCount().all())
 			.call(chart);
 		})
-		
-		
 	}
 	
 	
@@ -245,6 +244,13 @@ function app(){
 			.attr("fill",function(d){return colorReport(d.properties.RecordType)});
 		});
 		
+		dispatch.on("changeYear.charts", function(newYear){
+			dYear.filter(newYear);
+			chartDescriptors.forEach(function(d){
+				d.chart.refresh(d.cfDimension.group().reduceCount().all());
+			})
+		})
+		
 		
 		dispatch.on("changeRecordType.buttons", function(newRecordType){
 			console.log("changeRecordType.buttons");
@@ -254,8 +260,17 @@ function app(){
 			.classed("btn-primary",function(d){return d==newRecordType});
 		});
 		
+		dispatch.on("changeRecordType.charts", function(newRecordType){
+			if(newRecordType=="All")
+				dRecordType.filterAll()
+			else
+				dRecordType.filter(newRecordType);
+			chartDescriptors.forEach(function(d){
+				d.chart.refresh(d.cfDimension.group().reduceCount().all());
+			})
+		})
+		
 		dispatch.on("changeRecordType.map", function(newRecordType){
-			dispatch.changeYear(-1);
 			svg.select("g.reports")
 				.selectAll("path")
 			.transition().duration(1500)

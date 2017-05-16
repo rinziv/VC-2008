@@ -45,6 +45,15 @@ function CrossFilterChart(){
 		return me;
 	}
 	
+	me.refresh = function(data){
+		console.log(data);
+		svg
+		.datum(transformData(data))
+		.call(nvchart);
+		
+		return me;
+	}
+	
 	function transformData(data){
 		return [
 			{
