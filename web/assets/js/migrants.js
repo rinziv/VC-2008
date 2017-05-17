@@ -273,8 +273,6 @@ function app(){
 			.classed("btn-primary",function(d){return d==newYear});
 		});
 		
-		
-		
 		dispatch.on("changeYear.charts", function(newYear){
 			dYear.filter(newYear);
 			chartDescriptors.forEach(function(d){
@@ -288,7 +286,6 @@ function app(){
 		dispatch.on("changeYear.map", function(newYear){
 			refreshMap(dYear);
 		});
-		
 		
 		dispatch.on("changeRecordType.buttons", function(newRecordType){
 			console.log("changeRecordType.buttons");
@@ -314,6 +311,21 @@ function app(){
 		dispatch.on("changeRecordType.map", function(newRecordType){
 			refreshMap(dRecordType);
 		});
+		
+		d3.select("#description")
+			.selectAll("a.RecordType")
+			.on("click", function(d){
+				dispatch.changeRecordType(
+					d3.select(this).text()
+				);
+			})
+		d3.select("#description")
+			.selectAll("a.Year")
+			.on("click", function(d){
+				dispatch.changeYear(
+					d3.select(this).text()
+				);
+			})
 	}
 	
 	function refreshMap(cfDimension){
