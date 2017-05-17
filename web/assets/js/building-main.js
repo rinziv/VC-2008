@@ -1,5 +1,7 @@
 
 function BuildingApp(){
+	var width = 910;
+	var height = 610;
 	
 	function me(selection){
 		console.log("BuildingApp");
@@ -14,9 +16,14 @@ function BuildingApp(){
 				});	
 			var building = buildingBitmap();
 	
-			d3.select("#building")
-			.datum(aMap)
-			.call(building);
+			var svg = d3.select("#building")
+				.append("svg")
+				.attr("width", width)
+				.attr("height", height)
+				.append("g")
+				.classed("buildingMap", true)
+				.datum(aMap)
+				.call(building);
 	
 		});
 		
