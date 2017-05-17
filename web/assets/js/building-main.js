@@ -1,5 +1,6 @@
 
 function BuildingApp(){
+	var svg;
 	var width = 910;
 	var height = 610;
 	
@@ -16,11 +17,12 @@ function BuildingApp(){
 				});	
 			var building = buildingBitmap();
 	
-			var svg = d3.select("#building")
+			svg = d3.select("#building")
 				.append("svg")
 				.attr("width", width)
-				.attr("height", height)
-				.append("g")
+			.attr("height", height);
+			
+			svg.append("g")
 				.classed("buildingMap", true)
 				.datum(aMap)
 				.call(building);
@@ -57,7 +59,12 @@ function BuildingApp(){
 	
 			console.log("trajs",trajs);
 			console.log("trs",trs);
-		
+			
+			var trajectories = Trajectories();
+			svg.append("g")
+				.classed("trajs",true)
+				.datum(trs)
+			.call(trajectories);
 		}
 	)
 		
