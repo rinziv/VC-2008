@@ -27,8 +27,55 @@ function BuildingApp(){
 	
 		});
 		
+	d3.tsv("assets/data/rfid_pathway.txt", 
+		function(row){
+			return {
+				person: +row.Person,
+				time: +row.Time,
+				x: +row.xcor,
+				y: +row.ycor
+			}
+		},
+		function(error, paths){
+			if(error) console.log(error);
+	
+			var trajs = d3.nest()
+				.key(function(d){return d.person})
+			.entries(paths);
+		
+			var trs = d3.values(trajs).map(function(d){
+				var pl = d.values.map(function(p,i){
+					if(i==0) return 0;
+					return euclideanDistance(p, d.values[i-1])
+				});
+				return {
+				person: +d.key,
+				values: d.values.map(function(p){return {x:p.x, y:p.y}}),
+				path_length: pl.reduce(function(a,b){return a+b}, 0),
+				delta_s: pl
+			}})
+	
+			console.log("trajs",trajs);
+			console.log("trs",trs);
+		
+		}
+	)
+		
 		
 	}
+	
+	function euclideanDistance(a,b){
+		return Math.sqrt(Math.pow(a.x -b.x,2) + Math.pow(a.y - b.y,2));
+	}
+
+	function distances(p1,p2){
+		console.log("p1",p1);
+		console.log("p2",p2);
+		return p1.values.map(function(d,i){
+			return [i, euclideanDistance(d, p2.values[i])]
+			});
+	}
+	
 	
 	return me;
 }
