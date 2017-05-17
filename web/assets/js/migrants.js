@@ -10,7 +10,8 @@ function app(){
 	var dRecordType; // dimension for RecordType 
 	var dMonth; // dimension for Month 
 	var dVesselType; // dimension for VesselType 
-	var chartDescriptors; 
+	var chartDescriptors;
+	var counterDescriptor;
 	
 	var colorByReport = d3.scale.ordinal() 
 		.domain(["Interdiction","Landing"]) 
@@ -151,7 +152,7 @@ function app(){
 	}
 	
 	function createCounters(){
-		var counterDescriptor = [
+		counterDescriptor = [
 			{
 				measure: "# Records",
 				cfAggregator: cf.groupAll().reduceCount(),
@@ -170,6 +171,7 @@ function app(){
 		
 		counterDescriptor.forEach(function(d){
 			var counter = Counter().measure(d.measure);
+			d.counter = counter;
 			d3.select("#counters")
 				.append("div")
 				.classed(d.classed, true)
@@ -278,12 +280,13 @@ function app(){
 			chartDescriptors.forEach(function(d){
 				d.chart.refresh(d.cfDimension.group().reduceCount().all());
 			})
+			counterDescriptor.forEach(function(d){
+				d.counter.refresh(d.cfAggregator.value())
+			})
 		})
 		
 		dispatch.on("changeYear.map", function(newYear){
 			refreshMap(dYear);
-			
-
 		});
 		
 		
@@ -302,6 +305,9 @@ function app(){
 				dRecordType.filter(newRecordType);
 			chartDescriptors.forEach(function(d){
 				d.chart.refresh(d.cfDimension.group().reduceCount().all());
+			});
+			counterDescriptor.forEach(function(d){
+				d.counter.refresh(d.cfAggregator.value())
 			})
 		})
 		

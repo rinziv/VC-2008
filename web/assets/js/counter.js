@@ -2,6 +2,7 @@
 function Counter(){
 	
 	var measure = "Measure";
+	var h1s;
 		
 	function me(selection){
 		var h3s = selection.selectAll("h3.measure")
@@ -14,7 +15,7 @@ function Counter(){
 		h3s.text(measure);
 		
 		
-		var h1s = selection.selectAll("h1.value")
+		h1s = selection.selectAll("h1.value")
 		.data([selection.datum()]);
 		
 		h1s.enter()
@@ -22,6 +23,13 @@ function Counter(){
 		.classed("value", true);
 		
 		h1s.text(function(d){return d});
+	}
+	
+	me.refresh = function(data){
+		h1s.data([data])
+		.text(function(d){return d});
+		
+		return me;
 	}
 	
 	me.measure = function(_){
