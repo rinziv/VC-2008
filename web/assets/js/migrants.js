@@ -56,14 +56,15 @@ function app(){
 	        console.log("vesselType", dVesselType.group().reduceCount().all()); 
       	  	
 			createCharts();
+			createCounters();
 			
 	        // select count(*) from migrants where VesselType=="Rustic” 
 	        // dVesselType.filter("Go Fast"); 
-	        console.log("num reports (Go Fast)",cf.groupAll().reduceCount().value()); 
+	        console.log("num reports (Go Fast)",cf.groupAll().reduceCount()); 
 	        // select sum(Passengers) from migrants where VesselType=="Rustic” 
 	        console.log("num passengers (Go Fast)", cf.groupAll().reduceSum(function(d){return d.Passengers}).value()) 
 	        // select sum(NumDeaths) from migrants where VesselType=="Rustic” 
-	        console.log("num deaths (Go Fast)", cf.groupAll().reduceSum(function(d){return d.NumDeaths}).value()) 
+	        console.log("num deaths (Go Fast)", cf.groupAll().reduceSum(function(d){return d.NumDeaths})) 
 	        // select VesselType, count(*) from migrants group by VesselType 
 	        var countVesselType = dVesselType.group().reduceCount(); 
 	        console.log(countVesselType.all()); 
@@ -147,6 +148,16 @@ function app(){
 			createToolbar(migrants);
 			registerEventListeners();
 		})
+	}
+	
+	function createCounters(){
+		var counter = Counter().measure("# Passengers");
+		d3.select("#counters")
+			.append("div")
+			.classed("counter-"+"Passengers", true)
+			.classed("col-xs-12", true)
+			.datum(cf.groupAll().reduceSum(function(d){return d.Passengers}).value())
+		.call(counter);
 	}
 	
 	function createCharts(){
