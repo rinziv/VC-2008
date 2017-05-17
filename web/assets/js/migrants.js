@@ -151,13 +151,36 @@ function app(){
 	}
 	
 	function createCounters(){
-		var counter = Counter().measure("# Passengers");
-		d3.select("#counters")
-			.append("div")
-			.classed("counter-"+"Passengers", true)
-			.classed("col-xs-12", true)
-			.datum(cf.groupAll().reduceSum(function(d){return d.Passengers}).value())
-		.call(counter);
+		var counterDescriptor = [
+			{
+				measure: "# Records",
+				cfAggregator: cf.groupAll().reduceCount(),
+				classed: "counter-num-records"
+			},{
+				measure: "# Passengers",
+				cfAggregator: cf.groupAll().reduceSum(function(d){return d.Passengers}),
+				classed: "counter-Passengers"
+			},{
+				measure: "# Deaths",
+				cfAggregator: cf.groupAll().reduceSum(function(d){return d.NumDeaths}),
+				classed: "counter-num-records"
+			}
+		]
+		
+		
+		counterDescriptor.forEach(function(d){
+			var counter = Counter().measure(d.measure);
+			d3.select("#counters")
+				.append("div")
+				.classed(d.classed, true)
+				.classed("col-xs-12", true)
+				.datum(d.cfAggregator.value())
+			.call(counter);
+		})
+		
+		
+		
+		
 	}
 	
 	function createCharts(){
