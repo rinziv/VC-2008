@@ -65,6 +65,10 @@ function BuildingApp(){
 				.classed("trajs",true)
 				.datum(trs)
 			.call(trajectories);
+			
+			var timeline = TimelineBrush();
+			d3.select("#timeline")
+			.call(timeline);
 		}
 	)
 		
