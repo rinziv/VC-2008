@@ -117,10 +117,10 @@ function app(){
 			console.log("centroid", centroid);
 			
 			map.center(centroid)
-				.scale(5000);
+				.scale(3000);
 							
 			svg = selection.append("svg")
-			.attr({width:"100%", height:1000});
+			.attr({width:"100%", height:500});
 			
 			var gWorld = svg.append("g")
 			.attr("class","mapWorld");
@@ -204,7 +204,7 @@ function app(){
 		
 		
 		chartDescriptors.forEach(function(d){
-			var chart = CrossFilterChart().dimension(d.dimension);
+			var chart = CrossFilterChart().dimension(d.dimension).height(200);
 			d.chart = chart;
 			d3.select("#charts")
 				.append("div")
