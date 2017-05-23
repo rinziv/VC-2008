@@ -3,6 +3,8 @@ function BuildingApp(){
 	var svg;
 	var width = 910;
 	var height = 610;
+	var trajectories;
+	var timeline;
 	
 	function me(selection){
 		console.log("BuildingApp");
@@ -29,50 +31,52 @@ function BuildingApp(){
 	
 		});
 		
-	d3.tsv("assets/data/rfid_pathway.txt", 
-		function(row){
-			return {
-				person: +row.Person,
-				time: +row.Time,
-				x: +row.xcor,
-				y: +row.ycor
-			}
-		},
-		function(error, paths){
-			if(error) console.log(error);
-	
-			var trajs = d3.nest()
-				.key(function(d){return d.person})
-			.entries(paths);
-		
-			var trs = d3.values(trajs).map(function(d){
-				var pl = d.values.map(function(p,i){
-					if(i==0) return 0;
-					return euclideanDistance(p, d.values[i-1])
-				});
+		d3.tsv("assets/data/rfid_pathway.txt", 
+			function(row){
 				return {
-				person: +d.key,
-				values: d.values.map(function(p){return {x:p.x, y:p.y}}),
-				path_length: pl.reduce(function(a,b){return a+b}, 0),
-				delta_s: pl
-			}})
+					person: +row.Person,
+					time: +row.Time,
+					x: +row.xcor,
+					y: +row.ycor
+				}
+			},
+			function(error, paths){
+				if(error) console.log(error);
 	
-			console.log("trajs",trajs);
-			console.log("trs",trs);
-			
-			var trajectories = Trajectories();
-			svg.append("g")
-				.classed("trajs",true)
-				.datum(trs)
-			.call(trajectories);
-			
-			var timeline = TimelineBrush();
-			d3.select("#timeline")
-			.call(timeline);
-		}
-	)
+				var trajs = d3.nest()
+					.key(function(d){return d.person})
+				.entries(paths);
 		
-		
+				var trs = d3.values(trajs).map(function(d){
+					var pl = d.values.map(function(p,i){
+						if(i==0) return 0;
+						return euclideanDistance(p, d.values[i-1])
+					});
+					return {
+					person: +d.key,
+					values: d.values.map(function(p){return {x:p.x, y:p.y}}),
+					path_length: pl.reduce(function(a,b){return a+b}, 0),
+					delta_s: pl
+				}});
+	
+				console.log("trajs",trajs);
+				console.log("trs",trs);
+			
+				trajectories = Trajectories();
+				svg.append("g")
+					.classed("trajs",true)
+					.datum(trs)
+				.call(trajectories);
+			
+				timeline = TimelineBrush().domain([0,trs[0].values.length]);
+				d3.select("#timeline")
+				.call(timeline);
+			}
+		)
+	}
+	
+	me.trajectories = function(){
+		return trajectories;
 	}
 	
 	function euclideanDistance(a,b){

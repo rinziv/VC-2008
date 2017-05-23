@@ -2,7 +2,7 @@
 
 function TimelineBrush(){
 	var width = 960;
-	var height = 100;
+	var height = 50;
 	
 	var x = d3.scale.linear()
 		.domain([0,800])
@@ -10,8 +10,8 @@ function TimelineBrush(){
 	
 	var brush = d3.svg.brush()
 		.x(x)
-		.extent([10,100])
-		.on("brushend", brushed);
+		.extent([0,10])
+		.on("brush", brushed);
 	
 	function me(selection){
 		
@@ -39,13 +39,21 @@ function TimelineBrush(){
 		
 	}
 	
+	me.domain = function(_){
+		if(!arguments.length) return x.domain();
+		x.domain(_);
+		
+		return me;
+	} 
+	
 	function brushed(){
 		var extent0 = brush.extent(),
 			extent1;
 
 		extent1 = extent0.map(function(d){return Math.round(d)});
 		
-		console.log(extent1);
+		dispatch.intervalSelection(extent1);
+		//console.log(extent1);
 		//d3.select(this).call(brush.extent(extent1));
 	}
 
