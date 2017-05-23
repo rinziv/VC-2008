@@ -19,6 +19,8 @@ dispatch.on("togglePersonSelection", function(d){
 })
 
 
+
+
 dispatch.on("updatedPersonSelection.list", function(d, selectedPersons){
 	
 	d3.select("#persons")
