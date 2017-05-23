@@ -44,7 +44,7 @@ function Trajectories(){
 		var paths = container.selectAll("path")
 		.data(container.datum(), function(d){return d.person});
 		paths.attr("d", function(d){
-			return path(d.values.slice(timeExtent[0],timeExtent[1]));
+			return path(d.values.slice(timeExtent[0],timeExtent[1]))+"m -2, 0 a 2,2 0 1,0 4,0 a 2,2 0 1,0 -4,0 ";
 			});
 	}
 	

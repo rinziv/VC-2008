@@ -17,13 +17,14 @@ function TimelineBrush(){
 		
 		var svg = selection.append("svg")
 			.attr({width: width+40, height: height+40})
-		.append("g");
+		.append("g")
+		.attr("transform","translate(20,0)");
 		
 		svg.append("rect")
 			.attr({width: width, height: height, fill:"#ddd"});
 		
 		svg.append("g")
-			.classed("x grid", true)
+			.classed("x grid axis", true)
 			.attr("transform", "translate(0,"+height+")")
 			.call(d3.svg.axis()
 				.scale(x)
@@ -35,7 +36,8 @@ function TimelineBrush(){
 		.call(brush);
 	
 		gBrush.selectAll("rect")
-		.attr("height", height);
+		.attr("y",1)
+		.attr("height", height-1);
 		
 	}
 	
