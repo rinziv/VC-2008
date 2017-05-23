@@ -27,7 +27,7 @@ function Trajectories(){
 		paths
 			.enter()
 			.append("path")
-			.attr("stroke-width",1)
+			.attr("stroke-width",2)
 			.attr("stroke", "black")
 			.attr("fill","none")
 		.attr("opacity",0.4);

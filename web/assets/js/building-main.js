@@ -87,13 +87,10 @@ function BuildingApp(){
 	
 			console.log("ids",ids);
 	
-			var plist = PersonList();
+			me.personList = PersonList();
 			d3.select("#persons")
 				.datum(ids)
-			.call(plist);
-
-	
-	
+			.call(me.personList);
 		});
 		
 	}

@@ -2,6 +2,8 @@
 
 function PersonList(){
 	
+	var selectedPersons = {};
+	
 	function me(selection){
 		console.log(selection);
 		var list = selection.append("div")
@@ -13,14 +15,24 @@ function PersonList(){
 			.append("a")
 			.attr("href","#")
 		.classed("list-group-item",true)
-		.on("click",function(d){console.log(d)});
+		.on("click",function(d){
+			dispatch.togglePersonSelection(d);
+		});
+		
 		list.append("span")
 			.classed("badge",true)
 		.text(function(d){return d.id});
+		
 		list.append("span")
 			.text(function(d){return d.person})
 			
 		
+	}
+	
+	
+	
+	me.selectedPersons = function(){
+		return selectedPersons;
 	}
 	
 	return me;
