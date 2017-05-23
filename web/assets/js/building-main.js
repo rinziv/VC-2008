@@ -73,6 +73,29 @@ function BuildingApp(){
 				.call(timeline);
 			}
 		)
+		
+		d3.tsv("assets/data/rfid_assignments.txt",
+		function(row){
+			var entries = d3.values(row);
+
+			if(entries[0].length > 0)
+				return {id: +entries[0],
+					person: entries[1]}
+		},
+		function(error,ids){
+			if(error) console.log(error);
+	
+			console.log("ids",ids);
+	
+			var plist = PersonList();
+			d3.select("#persons")
+				.datum(ids)
+			.call(plist);
+
+	
+	
+		});
+		
 	}
 	
 	me.trajectories = function(){
