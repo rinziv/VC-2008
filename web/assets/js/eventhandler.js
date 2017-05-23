@@ -1,4 +1,4 @@
-var dispatch = d3.dispatch("intervalSelection","togglePersonSelection", "updatedPersonSelection");
+var dispatch = d3.dispatch("intervalSelection", "updatedPersonSelection");
 
 
 dispatch.on("intervalSelection", function(d){
@@ -8,17 +8,11 @@ dispatch.on("intervalSelection", function(d){
 })
 
 
-dispatch.on("togglePersonSelection", function(d){
-	var selectedPersons = buildingApp.personList.selectedPersons();
-	if(selectedPersons[d.id]){
-		delete selectedPersons[d.id]
-	}else
-		selectedPersons[d.id] = d;
-	
-	dispatch.updatedPersonSelection(d, selectedPersons);
-})
 
 
+// dispatch.on("unselectAllPerson", function(){
+//
+// })
 
 
 dispatch.on("updatedPersonSelection.list", function(d, selectedPersons){

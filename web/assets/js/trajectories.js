@@ -65,7 +65,7 @@ function Trajectories(){
 	}
 	
 	function brushed(){
-		console.log(brush.extent());
+		// console.log(brush.extent());
 		
 		
 	}
@@ -75,11 +75,15 @@ function Trajectories(){
 			console.log("empty selection");
 		
 		var extent = brush.extent();
+		
+		var list = [];
 		container.datum().forEach(function(p){  // for each person
-			var lastPoint = p.values[timeExtent[1]];
+			var lastPoint = p.values[timeExtent[1]-1];
+			
 			if(isWithin(lastPoint, extent))
-				dispatch.togglePersonSelection({id:p.person});
+				list.push({id:p.person});
 		})
+		buildingApp.personList.selectMultiplePersons(list);
 	}
 	
 	function isWithin(p, e){

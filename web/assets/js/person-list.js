@@ -16,7 +16,8 @@ function PersonList(){
 			.attr("href","#")
 		.classed("list-group-item",true)
 		.on("click",function(d){
-			dispatch.togglePersonSelection(d);
+			me.togglePersonSelection(d);
+			// dispatch.togglePersonSelection(d);
 		});
 		
 		list.append("span")
@@ -29,7 +30,28 @@ function PersonList(){
 		
 	}
 	
+	me.togglePersonSelection = function(d){
+		if(selectedPersons[d.id]){
+			delete selectedPersons[d.id]
+		}else
+			selectedPersons[d.id] = d;
 	
+		dispatch.updatedPersonSelection(d, selectedPersons);
+	}
+	
+	me.selectMultiplePersons = function(list){
+		selectedPersons = {};
+		list.forEach(function(p){
+			selectedPersons[p.id] = p;
+		})
+		
+		dispatch.updatedPersonSelection(null, selectedPersons);
+	}
+	
+	me.unselectAll = function(){
+		selectedPersons = {};
+		dispatch.updatedPersonSelection(null, selectedPersons);
+	}
 	
 	me.selectedPersons = function(){
 		return selectedPersons;
