@@ -3,6 +3,7 @@
 function TimelineBrush(){
 	var width = 960;
 	var height = 50;
+	var extent1 = [];
 	
 	var x = d3.scale.linear()
 		.domain([0,800])
@@ -49,14 +50,18 @@ function TimelineBrush(){
 	} 
 	
 	function brushed(){
-		var extent0 = brush.extent(),
-			extent1;
+		var extent0 = brush.extent();
+	
 
 		extent1 = extent0.map(function(d){return Math.round(d)});
 		
 		dispatch.intervalSelection(extent1);
 		//console.log(extent1);
-		//d3.select(this).call(brush.extent(extent1));
+		d3.select(this).call(brush.extent(extent1));
+	}
+	
+	me.timeInterval = function(){
+		return extent1;
 	}
 
 	return me;

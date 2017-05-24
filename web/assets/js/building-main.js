@@ -71,6 +71,10 @@ function BuildingApp(){
 				timeline = TimelineBrush().domain([0,trs[0].values.length]);
 				d3.select("#timeline")
 				.call(timeline);
+				
+				d3.select("#status")
+				.call(me.statusbar);
+		
 			}
 		)
 		
@@ -93,10 +97,17 @@ function BuildingApp(){
 			.call(me.personList);
 		});
 		
+		me.statusbar = StatusBar();
+		
+
 	}
 	
 	me.trajectories = function(){
 		return trajectories;
+	}
+	
+	me.timeline = function(){
+		return timeline;
 	}
 	
 	function euclideanDistance(a,b){
