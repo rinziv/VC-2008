@@ -4,14 +4,59 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <title>Evacuation Building</title>
         <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" type="text/css" media="screen">
+		
+		<script src="node_modules/d3/d3.min.js" type="text/javascript" charset="utf-8"></script>
+		
+        <script src="assets/js/building-bitmap.js" type="text/javascript" charset="utf-8"></script>
+        <script src="assets/js/trajectories.js" type="text/javascript" charset="utf-8"></script>
+        <script src="assets/js/timeline.js" type="text/javascript" charset="utf-8"></script>
+        <script src="assets/js/eventhandler.js" type="text/javascript" charset="utf-8"></script>
+        <script src="assets/js/person-list.js" type="text/javascript" charset="utf-8"></script>
+        <script src="assets/js/status-bar.js" type="text/javascript" charset="utf-8"></script>
         
-        <script src="node_modules/d3/d3.min.js" type="text/javascript" charset="utf-8"></script>
+        
+        
+        <style type="text/css" media="screen">
+            .axis text {
+              font: 11px sans-serif;
+            }
+            .axis path {
+              display: none;
+            }
+            .axis line {
+              fill: none;
+              stroke: #000;
+              shape-rendering: crispEdges;
+            }
+            .grid-background {
+              fill: #ddd;
+            }
+            
+            .brush .extent {
+              stroke: #000;
+              fill-opacity: .125;
+              shape-rendering: crispEdges;
+            }
+			
+			svg g.trajs path{
+				stroke: #000;
+			}
+			
+			svg g.trajs path.active{
+				stroke: #f00;
+			}
+        </style>
         
     </head>
     <body id="main">
         <div class="container">
+			<h1 >Building</h1>
+			<div class="row">
+				<div id="status">
+					
+				</div>
+			</div>
             <div class="row">
-                <h1 >Building</h1>
                 <div id="building" class="col-md-10">
                     
                 </div>
@@ -19,13 +64,16 @@
                     
                 </div>
             </div>
+            <div class="row" id="timeline">
+                
+            </div>
             <div class="row">
                 <div id="linecharts">
                     
                 </div>
             </div>
         </div>
-        <script src="assets/js/building.js" type="text/javascript" charset="utf-8"></script>
+        <script src="assets/js/building-main.js" type="text/javascript" charset="utf-8"></script>
         
     </body>
 </html>
