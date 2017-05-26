@@ -16,16 +16,22 @@
 			#network .node{
 				fill: steelblue;
 				opacity: 0.6;
+				stroke: none;
 			}
 			
 			#network .node.highlight{
-				fill: red;
+				stroke:red;
+				stroke-width: 2px;
 			}
 			
 			#network .link{
-				stroke-color: gray;
+				stroke: lightgray;
 				opacity: 0.4;
 				fill: none;
+			}
+			
+			#network .link.highlight{
+				stroke: green;
 			}
 		</style>
     </head>
