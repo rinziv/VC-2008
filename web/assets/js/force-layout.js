@@ -36,7 +36,7 @@ function ForceLayout(){
       .selectAll(".link") 
       .data(svg.datum().links) 
       .enter() 
-      .append("line") 
+      .append("path") 
       .classed("link", true) 
       .style("stroke","lightgray") 
     .style("stroke-width", function(d){return linkStrokeScale(d.weight)}); 
@@ -48,20 +48,33 @@ function ForceLayout(){
       .enter() 
       .append("circle") 
       .classed("node", true) 
-    .attr("r", function(d){return d.weight}); 
+    .attr("r", function(d){return d.weight})
+	.on("click", function(d){
+		toggleNode(d);
+		tick();
+	}); 
      
      
     force.on("tick", tick); 
   } 
+  
+  function toggleNode(n){
+	  n.highlight = !n.highlight;
+  }
    
   function tick(){ 
-    link.attr("x1", function(d) { return d.source.x; }) 
-      .attr("y1", function(d) { return d.source.y; }) 
-      .attr("x2", function(d) { return d.target.x; }) 
-      .attr("y2", function(d) { return d.target.y; }); 
+	  link.attr("d", function(d) { 
+	      var dx = d.target.x - d.source.x, 
+	          dy = d.target.y - d.source.y, 
+	          dr = Math.sqrt(dx * dx + dy * dy); 
+	      return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y; 
+	      }); 
  
     node.attr("cx", function(d) { return d.x; }) 
-      .attr("cy", function(d) { return d.y; }); 
+      .attr("cy", function(d) { return d.y; })
+		  .classed("highlight", function(d){return d.highlight});
+	  
+	 
   } 
    
   return me; 
