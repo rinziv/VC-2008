@@ -11,9 +11,14 @@ function ForceLayout(){
   	.linkDistance(150)
   .charge(-100)
   ; 
+  
+  var linkStrokeScale = d3.scale.linear()
+  .range([0,20]);
    
   function me(selection){ 
      
+	 linkStrokeScale
+	  	.domain(d3.extent(selection.datum().links, function(l){return l.weight}))
 	 
 	 
     force.nodes(selection.datum().nodes) 
@@ -34,7 +39,7 @@ function ForceLayout(){
       .append("line") 
       .classed("link", true) 
       .style("stroke","lightgray") 
-    .style("stroke-width", 1); 
+    .style("stroke-width", function(d){return linkStrokeScale(d.weight)}); 
  
     node = svg.append("g") 
       .classed("nodes", true) 
