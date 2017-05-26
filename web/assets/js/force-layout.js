@@ -6,7 +6,10 @@ function ForceLayout(){
    
   var svg; 
    
-  var force = d3.layout.force() 
+  var force = d3.layout.force()
+	  .gravity(0.3) 
+  	.linkDistance(150)
+  .charge(-100)
   ; 
    
   function me(selection){ 
