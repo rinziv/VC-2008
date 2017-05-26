@@ -20,7 +20,24 @@ function CellPhonesApp(){
 				if (error) console.log(error);
 			
 				console.log("calls", calls);
-				console.log("time extent", d3.extent(calls, function(d){return d.ts}))
+				console.log("time extent", d3.extent(calls, function(d){return d.ts}));
+				
+				var nodes = d3.nest()
+					.key(function(d){return d.source})
+					.key(function(d){return d.target})
+				.entries(calls);
+				
+				nodes = nodes.map(function(n){return {id:+n.key, weight: n.values.length, neighbors: n.values}}) 
+				console.log("nodes", nodes);
+				
+				var links = nodes.map(function(s){
+					return s.neighbors.map(function(t){
+						return {source: s, target: nodes[+t.key-1], weight: t.values.length};
+					})
+				});
+				
+				links = d3.merge(links);
+				console.log("links",links);
 			}
 		)
 		
